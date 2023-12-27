@@ -17,8 +17,7 @@ public class LaunchApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/main.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/app.fxml")));
 
         stage.setTitle("Tic Tac Toe GUI");
         stage.setScene(new Scene(root, 800, 600));
