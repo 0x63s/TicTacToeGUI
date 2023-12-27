@@ -16,13 +16,12 @@ public class LaunchApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Stage primaryStage = stage;
 
 
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/main.fxml")));
 
-        primaryStage.setTitle("Tic Tac Toe GUI");
-        primaryStage.setScene(new Scene(root, 800, 600));
-        primaryStage.show();
+        stage.setTitle("Tic Tac Toe GUI");
+        stage.setScene(new Scene(root, 800, 600));
+        stage.show();
     }
 }
