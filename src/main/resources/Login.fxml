@@ -16,6 +16,7 @@
                 <HBox spacing="10">
                     <Button text="Login" fx:id="loginButton" onAction="#onLoginButtonPressed"/>
                     <Button text="Logout" fx:id="logoutButton" onAction="#onLogoutButtonPressed"/>
+                    <Button text="Register" fx:id="registerButton" onAction="#onRegisterButtonPressed"/>
                 </HBox>
             </VBox>
 

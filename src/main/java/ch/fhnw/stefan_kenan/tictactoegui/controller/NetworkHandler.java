@@ -18,8 +18,10 @@ public class NetworkHandler {
     private boolean keepAlive = true;
     private static String endpointUrl = "http://localhost/";
     private static String port = "8080";
-    public static final String loginUrl = "login";
     public static final String pingUrl = "ping";
+    public static final String registerUrl = "users/register";
+    public static final String loginUrl = "users/login";
+    public static final String logoutUrl = "users/logout";
 
     NetworkHandler(){
         keepAlive = false;
@@ -101,10 +103,14 @@ public class NetworkHandler {
     }
 
     public JSONObject sendPostRequest(String urlStr, String body) throws Exception {
-        logger.debug("Sending POST request to: " + urlStr);
-        URL url = URI.create(urlStr).toURL();
+        final String uri = endpointUrl + ":" + port + "/" + urlStr;
+        logger.debug("Sending POST request to: " + uri);
+        URL url = URI.create(uri).toURL();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+
         con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
         con.setDoOutput(true);
         con.getOutputStream().write(body.getBytes());

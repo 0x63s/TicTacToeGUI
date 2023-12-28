@@ -27,6 +27,12 @@ public class Connection implements Initializable {
     private Label pingStatusLabel;
 
 
+    /*
+
+    The purpose of this function is to ping the server to check if it is online,
+    It modifies the ping button and the ping status label to show the user the status of the ping
+
+     */
     @FXML
     public void onPingButtonPressed() {
         pingButton.setDisable(true);
@@ -81,6 +87,11 @@ public class Connection implements Initializable {
         }
     }
 
+    /*
+
+    This function is used to ping the server, it returns true if the ping was successful and false if it failed
+
+     */
     public boolean pingServer() throws Exception {
         logger.debug("Pinging server");
 
@@ -108,7 +119,11 @@ public class Connection implements Initializable {
         }
     }
 
+    /*
 
+    This code is used to change the text from the text fields in Connection view.
+
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serverIpField.setText(NetworkHandler.getEndpointUrl());
