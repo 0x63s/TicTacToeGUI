@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.Connection"
+            prefHeight="200.0" prefWidth="800.0">
+
+
+            <HBox xmlns:fx="http://javafx.com/fxml" spacing="10">
+                <Label text="Server IP:"/>
+                <TextField fx:id="serverIpField"/>
+                <Label text="Port:"/>
+                <TextField fx:id="portField"/>
+                <Button text="Ping" fx:id="pingButton" onAction="#onPingButtonPressed"/>
+                <Label text="Ping Status: "/>
+                <Label fx:id="pingStatusLabel"/>
+            </HBox>
+
+</AnchorPane>

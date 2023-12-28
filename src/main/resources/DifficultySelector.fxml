@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.DifficultySelector"
+            prefHeight="400.0" prefWidth="600.0">
+
+
+            <HBox xmlns:fx="http://javafx.com/fxml" spacing="10">
+                <Button text="Easy" fx:id="easyButton"/>
+                <Button text="Medium" fx:id="mediumButton"/>
+                <Button text="Hard" fx:id="hardButton"/>
+            </HBox>
+
+</AnchorPane>

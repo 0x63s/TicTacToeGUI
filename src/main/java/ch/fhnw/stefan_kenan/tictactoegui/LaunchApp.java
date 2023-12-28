@@ -4,30 +4,29 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class LaunchApp extends Application {
-    private static final Logger logger = LogManager.getLogger(LaunchApp.class);
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        VBox root = new VBox();
+
+        Parent connection = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Connection.fxml")));
+        Parent login = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Login.fxml")));
+        Parent difficultySelector = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/DifficultySelector.fxml")));
+        Parent gameField = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GameField.fxml")));
+
+        root.getChildren().addAll(connection, login, difficultySelector, gameField);
+
+        primaryStage.setTitle("Tic Tac Toe");
+        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.show();
+    }
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        logger.debug("Launching application...");
-        logger.debug("Loading app.fxml...");
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/app.fxml")));
-
-        stage.setTitle("Online TicTacToe GUI");
-        stage.setScene(new Scene(root, 800, 600));
-        stage.show();
-
-        logger.info("Application started");
     }
 }
