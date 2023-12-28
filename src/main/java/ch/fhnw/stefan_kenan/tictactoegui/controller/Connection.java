@@ -72,6 +72,7 @@ public class Connection implements Initializable {
         try {
             if(pingServer()){
                 pingStatusLabel.setText("Ping successful");
+                NetworkHandler.getInstance().startPingTask();
             } else {
                 pingStatusLabel.setText("Ping failed");
             }

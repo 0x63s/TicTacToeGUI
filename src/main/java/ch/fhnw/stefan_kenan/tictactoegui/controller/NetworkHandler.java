@@ -1,5 +1,6 @@
 package ch.fhnw.stefan_kenan.tictactoegui.controller;
 
+import ch.fhnw.stefan_kenan.tictactoegui.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -10,14 +11,21 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+
 import static java.lang.Thread.*;
 
 public class NetworkHandler {
     private static NetworkHandler instance;
     private final Logger logger = LogManager.getLogger(NetworkHandler.class);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private boolean connected = false;
     private boolean keepAlive = true;
     private static String endpointUrl = "http://localhost/";
-    private static String port = "8080";
+    private static String port = "50005";
     public static final String pingUrl = "ping";
     public static final String registerUrl = "users/register";
     public static final String loginUrl = "users/login";
@@ -129,5 +137,40 @@ public class NetworkHandler {
             con.disconnect();
         }
         return null;
+    }
+
+
+    /*
+
+        The following methods are used to check if the server is reachable.
+
+     */
+
+    public void startPingTask() {
+        final Runnable pingTask = () -> {
+            try {
+                sendGetRequest(pingUrl);
+                connected = true; // Connection successful
+            } catch (Exception e) {
+                connected = false; // Connection failed
+                stopPingTask();
+                logger.error("Ping failed. Stopping ping task.", e);
+                User.getInstance().clearUser();
+            }
+        };
+
+        scheduler.scheduleAtFixedRate(pingTask, 0, 3, TimeUnit.SECONDS);
+    }
+
+    public void stopPingTask() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
