@@ -17,7 +17,7 @@ public class NetworkHandler {
     private final Logger logger = LogManager.getLogger(NetworkHandler.class);
     private boolean keepAlive = true;
     private static String endpointUrl = "http://localhost/";
-    private static String port = "8080";
+    private static String port = "50005";
     public static final String pingUrl = "ping";
     public static final String registerUrl = "users/register";
     public static final String loginUrl = "users/login";
