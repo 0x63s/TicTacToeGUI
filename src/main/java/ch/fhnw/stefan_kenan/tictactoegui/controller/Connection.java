@@ -1,5 +1,6 @@
 package ch.fhnw.stefan_kenan.tictactoegui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -12,8 +13,9 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Connection implements Initializable {
+public class Connection implements Initializable, ConnectionStatusInterface {
     private final Logger logger = LogManager.getLogger(Connection.class);
+    private ConnectionStatusListener listener;
     @FXML
     private TextField serverIpField;
 
@@ -127,7 +129,29 @@ public class Connection implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        logger.debug("Initializing Connection view");
         serverIpField.setText(NetworkHandler.getEndpointUrl());
         portField.setText(NetworkHandler.getPort());
+
+        listener = new ConnectionStatusListener();
+        listener.addListener(this);
+    }
+
+
+    @Override
+    public void onConnected() {
+        logger.debug("Connection - onConnected");
+        Platform.runLater(() -> {
+            logger.debug("Disabling ping button");
+            pingButton.setDisable(true);
+        });
+    }
+
+    @Override
+    public void onDisconnected() {
+        Platform.runLater(() -> {
+            logger.debug("Enabling ping button");
+            pingButton.setDisable(false);
+        });
     }
 }

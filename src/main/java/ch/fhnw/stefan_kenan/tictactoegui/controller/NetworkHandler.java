@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.*;
 
-public class NetworkHandler {
+public class NetworkHandler implements ConnectionStatusInterface {
     private static NetworkHandler instance;
     private final Logger logger = LogManager.getLogger(NetworkHandler.class);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -30,8 +30,12 @@ public class NetworkHandler {
     public static final String registerUrl = "users/register";
     public static final String loginUrl = "users/login";
     public static final String logoutUrl = "users/logout";
+    public static final String createGameUrl = "game/new";
+    private ConnectionStatusListener listener;
 
     NetworkHandler(){
+        listener = new ConnectionStatusListener();
+        listener.addListener(this);
         keepAlive = false;
         endpointUrl = "";
     }
@@ -59,26 +63,6 @@ public class NetworkHandler {
         return instance;
     }
 
-    //This
-    public void startListening() {
-        new Thread(() -> {
-            while (keepAlive) {
-                try {
-                    String response = String.valueOf(sendGetRequest(endpointUrl));
-                    // Process the response
-                    // E.g., check if the opponent has made a move
-
-                    // Wait for a short interval before the next request
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    currentThread().interrupt();
-                } catch (Exception e) {
-                    logger.error("Error while handling Game Update!", e);
-
-                }
-            }
-        }).start();
-    }
 
     public void stopListening() {
         keepAlive = false;
@@ -145,22 +129,45 @@ public class NetworkHandler {
         The following methods are used to check if the server is reachable.
 
      */
-
     public void startPingTask() {
+        /*
+        if (!scheduler.isShutdown()) {
+            logger.debug("Ping task is already running");
+            return;
+        }
+
+         */
+
         final Runnable pingTask = () -> {
             try {
                 sendGetRequest(pingUrl);
                 connected = true; // Connection successful
+
+                //TODO: Enable login/logout/register buttons
+                //TODO: Disable ping button
+                logger.debug("Triggering onConnected event");
+                listener.onConnected();
+
+
+
             } catch (Exception e) {
                 connected = false; // Connection failed
                 stopPingTask();
                 logger.error("Ping failed. Stopping ping task.", e);
                 User.getInstance().clearUser();
+
+                //TODO: Disable login/logout/register buttons
+                //TODO: Enable ping button
+                logger.debug("Triggering onDisconnected event");
+                listener.onDisconnected();
+                stopPingTask();
             }
         };
 
         scheduler.scheduleAtFixedRate(pingTask, 0, 3, TimeUnit.SECONDS);
     }
+
+
 
     public void stopPingTask() {
         scheduler.shutdown();
@@ -172,5 +179,15 @@ public class NetworkHandler {
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
+    }
+
+    @Override
+    public void onConnected() {
+
+    }
+
+    @Override
+    public void onDisconnected() {
+
     }
 }

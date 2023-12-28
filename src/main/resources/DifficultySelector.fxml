@@ -10,9 +10,9 @@
 
 
             <HBox xmlns:fx="http://javafx.com/fxml" spacing="10">
-                <Button text="Easy" fx:id="easyButton"/>
-                <Button text="Medium" fx:id="mediumButton"/>
-                <Button text="Hard" fx:id="hardButton"/>
+                <Button text="Easy" fx:id="easyButton" onAction="#easyButtonClicked"/>
+                <Button text="Medium" fx:id="mediumButton" onAction="#mediumButtonClicked"/>
+                <Button text="Hard" fx:id="hardButton" onAction="#hardButtonClicked"/>
             </HBox>
 
 </AnchorPane>

@@ -1,17 +1,21 @@
 package ch.fhnw.stefan_kenan.tictactoegui.controller;
 
 import ch.fhnw.stefan_kenan.tictactoegui.model.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.ResourceBundle;
 
-public class Login {
+public class Login implements Initializable, ConnectionStatusInterface {
     private final Logger logger = LogManager.getLogger(Login.class);
 
     @FXML
@@ -19,6 +23,9 @@ public class Login {
 
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private Button registerButton;
 
     @FXML
     private TextField passwordField;
@@ -130,7 +137,7 @@ public class Login {
                 passwordField.clear(); //Poof! Password is gone
                 User.getInstance().createUser(
                         response.getString("userName"),
-                        response.getString("password"),
+                        response.getString("token"),
                         LocalDateTime.parse(response.getString("userExpiry"))
                 );
             } else {
@@ -186,6 +193,33 @@ public class Login {
         } catch (Exception e) {
             logger.error("Logout error: ", e);
         }
+    }
+
+    /*
+
+    The following methods are used to enable/disable the login/logout buttons when a connection is established/disconnected
+
+     */
+    @Override
+    public void onConnected() {
+        Platform.runLater(() -> {
+            loginButton.setDisable(false);
+            logoutButton.setDisable(false);
+        });
+    }
+
+    @Override
+    public void onDisconnected() {
+        Platform.runLater(() -> {
+            loginButton.setDisable(true);
+            logoutButton.setDisable(true);
+            registerButton.setDisable(true);
+        });
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        //TODO: Add listener
     }
 }
 
