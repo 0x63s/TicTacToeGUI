@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 public class GameBoard {
     private final Logger logger = LogManager.getLogger(GameBoard.class);
 
-    private Button[][] board = new Button[3][3];
+    public static Button[][] board = new Button[3][3];
 
     @FXML
     private Button cell00; // Represents the top-left cell
@@ -73,8 +73,26 @@ public class GameBoard {
         }
     }
 
+    public static void updateTicTacToeCell(int row, int col, int value) {
+        if(value == 1) {
+            board[row][col].setText("X");
+        } else if(value == -1) {
+            board[row][col].setText("O");
+        } else if(value == 0){
+            board[row][col].setText(" ");
+        } else {
+            //Invalid Cell
+        }
+    }
+
+
+
     @FXML
     private void handleCell(ActionEvent event) {
+        if(!GameController.getInstance().isGameRunning()) {
+            logger.debug("Game not running");
+            return;
+        }
 
         if(!User.isUserCreated()){
             logger.debug("User not logged in");
@@ -94,19 +112,11 @@ public class GameBoard {
         // Now you can use row and col
         logger.debug("Cell clicked: " + row + " " + col);
 
-        //get the button that was clicked
-        Button button = board[row][col];
-
-        if(button.getText().equals("X")) {
-            logger.debug("Cell already set");
-        	return;
+        try{
+            GameController.getInstance().makeMove(row, col);
+        } catch (Exception e){
+            logger.error("Error while making move: " + e.getMessage());
         }
-        if(button.getText().equals("O")) {
-            logger.debug("Cell already set by opponent");
-        	return;
-        }
-
-        button.setText("X");
 
 
     }

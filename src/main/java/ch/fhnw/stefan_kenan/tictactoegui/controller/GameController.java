@@ -3,9 +3,13 @@ package ch.fhnw.stefan_kenan.tictactoegui.controller;
 import ch.fhnw.stefan_kenan.tictactoegui.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GameController {
+
+
+    private int[][] board = new int[3][3];
 
     private final Logger logger = LogManager.getLogger(GameController.class);
     private static GameController instance;
@@ -92,6 +96,11 @@ public class GameController {
         } else{
             logger.debug("Response: " + response.toString());
             isGameRunning = true;
+
+            parseJsonBoard(response);
+            isPlayerTurn = true;
+
+            parseJsonBoard(response);
             //TODO: Create game object
             //TODO: CLear UI
         }
@@ -99,6 +108,7 @@ public class GameController {
 
 
     }
+
 
 
     //We need to implemment the move function
@@ -131,11 +141,17 @@ public class GameController {
 
          */
 
+        //cast int to string
+        String row = Integer.toString(x);
+        String col = Integer.toString(y);
+
         User.getInstance().getToken();
         JSONObject requestBody = new JSONObject();
         requestBody.put("token", User.getInstance().getToken());
-        requestBody.put("row", x);
-        requestBody.put("col", y);
+        requestBody.put("row", row);
+        requestBody.put("col", col);
+
+        logger.debug("Sending following data to server: " + requestBody.toString());
 
         JSONObject response = NetworkHandler.getInstance().sendPostRequest(NetworkHandler.makeMoveUrl, requestBody.toString());
 
@@ -160,6 +176,8 @@ public class GameController {
         } else{
             logger.debug("Response: " + response.toString());
 
+            parseJsonBoard(response);
+            isPlayerTurn = true;
             //TODO: Update gameLogic
             //TODO: Update Board
 
@@ -218,4 +236,40 @@ public class GameController {
         }
     }
 
+    // Method to parse the JSON board and update the int[][] board
+    public void parseJsonBoard(JSONObject response) {
+        // Check if the response has a 'board' key
+        if (response.has("board")) {
+            JSONArray jsonBoard = response.getJSONArray("board");
+
+            // Iterate through the rows of the board
+            for (int i = 0; i < jsonBoard.length(); i++) {
+                JSONArray row = jsonBoard.getJSONArray(i);
+
+                // Iterate through the columns of the current row
+                for (int j = 0; j < row.length(); j++) {
+                    // Get the value and update the int[][] board
+                    board[i][j] = row.getInt(j);
+                }
+            }
+            updateAllCells();
+        } else {
+            logger.error("Response does not contain 'board'");
+        }
+    }
+
+    private void updateAllCells() {
+        //cycle through each cell and update the state by using GameBoard.updateTicTacToeCell
+        //print board for debugging
+        logger.debug("Current board state: ");
+        for(int i = 0; i < board.length; i++) {
+            logger.debug(board[i][0] + " " + board[i][1] + " " + board[i][2]);
+        }
+        for(int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                logger.debug("Updating cell: " + i + " " + j + " " + board[i][j]);
+                GameBoard.updateTicTacToeCell(i, j, board[i][j]);
+            }
+        }
+    }
 }
