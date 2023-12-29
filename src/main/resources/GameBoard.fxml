@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.GameBoard">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.GameBoard">
 
     <GridPane xmlns:fx="http://javafx.com/fxml/1">
         <columnConstraints>
@@ -20,15 +20,15 @@
             <RowConstraints prefHeight="100" />
         </rowConstraints>
 
-        <Button fx:id="cell00" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <Button fx:id="cell01" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <Button fx:id="cell02" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <Button fx:id="cell10" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <Button fx:id="cell11" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Button fx:id="cell12" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <Button fx:id="cell20" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <Button fx:id="cell21" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-        <Button fx:id="cell22" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <Button fx:id="cell00" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onAction="#handleCell" />
+        <Button fx:id="cell01" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#handleCell" />
+        <Button fx:id="cell02" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="0" onAction="#handleCell" />
+        <Button fx:id="cell10" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="1" onAction="#handleCell" />
+        <Button fx:id="cell11" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#handleCell" />
+        <Button fx:id="cell12" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" onAction="#handleCell" />
+        <Button fx:id="cell20" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="2" onAction="#handleCell" />
+        <Button fx:id="cell21" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" onAction="#handleCell" />
+        <Button fx:id="cell22" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#handleCell" />
     </GridPane>
 
 

@@ -17,7 +17,7 @@ public class GameLogic {
 
     public boolean makeMove(int row, int col) {
         if (isValidMove(row, col)) {
-            gameBoard.handleClick(row, col);
+            //gameBoard.handleClick(row, col);
             switchPlayer();
             return true;
         }

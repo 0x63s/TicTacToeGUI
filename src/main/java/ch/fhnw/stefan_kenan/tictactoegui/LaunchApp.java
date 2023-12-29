@@ -18,7 +18,7 @@ public class LaunchApp extends Application {
         Parent connection = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Connection.fxml")));
         Parent login = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Login.fxml")));
         Parent difficultySelector = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/DifficultySelector.fxml")));
-        Parent gameField = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GameField.fxml")));
+        Parent gameField = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GameBoard.fxml")));
 
         root.getChildren().addAll(connection, login, difficultySelector, gameField);
 

@@ -1,9 +1,16 @@
 package ch.fhnw.stefan_kenan.tictactoegui.controller;
 
+import ch.fhnw.stefan_kenan.tictactoegui.model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GameBoard {
+    private final Logger logger = LogManager.getLogger(GameBoard.class);
 
     private Button[][] board = new Button[3][3];
 
@@ -45,15 +52,65 @@ public class GameBoard {
         board[2][0] = cell20;
         board[2][1] = cell21;
         board[2][2] = cell22;
-    }
-    public void handleClick(int row, int col) {
 
-        // set button text to "X" in the font arial bald 45 in the color black centered in the button
-        board[row][col].setText("X");
-        board[row][col].setFont(javafx.scene.text.Font.font("Arial Bold", 45));
-        board[row][col].setTextFill(javafx.scene.paint.Color.BLACK);
-        board[row][col].setAlignment(javafx.geometry.Pos.CENTER);
+        formatButtons();
     }
+
+    //create a function that formats the buttons to have a centered text with 40pt font
+    public void formatButtons() {
+        String style = "-fx-font-size: 40pt;" +
+                "-fx-background-color: #f0f0f0;" +
+                "-fx-text-fill: #333333;" +
+                "-fx-border-color: #666666;" +
+                "-fx-border-width: 2px;" +
+                "-fx-padding: 10px;" +
+                "-fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 5);";
+
+        for (Button[] row : board) {
+            for (Button button : row) {
+                button.setStyle(style);
+            }
+        }
+    }
+
+    @FXML
+    private void handleCell(ActionEvent event) {
+
+        if(!User.isUserCreated()){
+            logger.debug("User not logged in");
+            return;
+        }
+
+
+        Node source = (Node) event.getSource();
+        Integer colIndex = GridPane.getColumnIndex(source);
+        Integer rowIndex = GridPane.getRowIndex(source);
+
+        // Handle the cell action here
+        // colIndex and rowIndex might be null if not set, default to 0 if so
+        int col = colIndex != null ? colIndex : 0;
+        int row = rowIndex != null ? rowIndex : 0;
+
+        // Now you can use row and col
+        logger.debug("Cell clicked: " + row + " " + col);
+
+        //get the button that was clicked
+        Button button = board[row][col];
+
+        if(button.getText().equals("X")) {
+            logger.debug("Cell already set");
+        	return;
+        }
+        if(button.getText().equals("O")) {
+            logger.debug("Cell already set by opponent");
+        	return;
+        }
+
+        button.setText("X");
+
+
+    }
+
     public String getButtonText(int row, int col) {
         return board[row][col].getText();
     }
