@@ -47,4 +47,8 @@ public class DifficultySelector implements Initializable {
         }
     }
 
+    @FXML
+    public void resetButtonClicked() throws Exception {
+            GameController.getInstance().resetGame();
+    }
 }

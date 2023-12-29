@@ -47,6 +47,18 @@ public class User {
         return wins;
     }
 
+    public void addWin(){
+        this.wins++;
+    }
+
+    public void addLoss(){
+        this.losses++;
+    }
+
+    public void addDraw(){
+        this.draws++;
+    }
+
     public static User getInstance() {
         if (instance == null) {
             instance = new User();

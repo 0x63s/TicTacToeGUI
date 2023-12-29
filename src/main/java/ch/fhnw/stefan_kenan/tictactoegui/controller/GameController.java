@@ -44,8 +44,8 @@ public class GameController {
             return;
         }
         if(isGameFinished){
-            logger.debug("Game is already finished");
-            return;
+            logger.debug("Game is finished, resetting board");
+            resetGame();
         }
 
         /*
@@ -177,6 +177,7 @@ public class GameController {
             logger.debug("Response: " + response.toString());
 
             parseJsonBoard(response);
+            checkBoardWin();
             isPlayerTurn = true;
             //TODO: Update gameLogic
             //TODO: Update Board
@@ -267,9 +268,112 @@ public class GameController {
         }
         for(int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                logger.debug("Updating cell: " + i + " " + j + " " + board[i][j]);
+                //logger.debug("Updating cell: " + i + " " + j + " " + board[i][j]);
                 GameBoard.updateTicTacToeCell(i, j, board[i][j]);
             }
         }
+    }
+
+    public void resetGame(){
+        try{
+            if(isGameRunning){
+                quitGame();
+            }
+            isGameFinished = false;
+            isGameRunning = false;
+            isPlayerTurn = false;
+
+            //reset UI
+            board = new int[3][3];
+            updateAllCells();
+        } catch (Exception e){
+            logger.error("Error while resetting game: " + e.getMessage());
+        }
+
+    }
+
+    public void checkBoardWin(){
+        //Search for tictactoe patterns in the board that will result a win
+        //If found, call winGame()
+
+        //Check rows
+        for(int i = 0; i < board.length; i++){
+            if(board[i][0] == board[i][1] && board[i][1] == board[i][2]){
+                if(board[i][0] == 1){
+                    winGame();
+                } else if(board[i][0] == -1){
+                    loseGame();
+                }
+            }
+        }
+
+        //Check columns
+        for(int i = 0; i < board.length; i++){
+            if(board[0][i] == board[1][i] && board[1][i] == board[2][i]){
+                if(board[0][i] == 1){
+                    winGame();
+                } else if(board[0][i] == -1){
+                    loseGame();
+                }
+            }
+        }
+
+        //Check diagonals
+        if(board[0][0] == board[1][1] && board[1][1] == board[2][2]){
+            if(board[0][0] == 1){
+                winGame();
+            } else if(board[0][0] == -1){
+                loseGame();
+            }
+        }
+        //check other diagonal
+        if(board[0][2] == board[1][1] && board[1][1] == board[2][0]){
+            if(board[0][2] == 1){
+                winGame();
+            } else if(board[0][2] == -1){
+                loseGame();
+            }
+        }
+
+        //if all cells are filled and no win condition is found, call drawGame()
+        boolean isBoardFull = true;
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board.length; j++) {
+                if(board[i][j] == 0){
+                    isBoardFull = false;
+                }
+            }
+        }
+
+        if(isBoardFull){
+            drawGame();
+        }
+    }
+
+    private void winGame(){
+        logger.debug("Player won the game");
+        isGameFinished = true;
+        isGameRunning = false;
+        isPlayerTurn = false;
+        User.getInstance().addWin();
+        //TODO: Update Stat UI
+    }
+
+    private void loseGame(){
+        logger.debug("Player lost the game");
+        isGameFinished = true;
+        isGameRunning = false;
+        isPlayerTurn = false;
+        User.getInstance().addLoss();
+        //TODO: Update Stat UI
+    }
+
+    private void drawGame(){
+        logger.debug("Game ended in a draw");
+        isGameFinished = true;
+        isGameRunning = false;
+        isPlayerTurn = false;
+        User.getInstance().addDraw();
+        //TODO: Update Stat UI
     }
 }

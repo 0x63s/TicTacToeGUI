@@ -131,6 +131,8 @@ public class NetworkHandler implements ConnectionStatusInterface {
         The following methods are used to check if the server is reachable.
 
      */
+
+    /*
     public void startPingTask() {
         /*
         if (!scheduler.isShutdown()) {
@@ -138,9 +140,10 @@ public class NetworkHandler implements ConnectionStatusInterface {
             return;
         }
 
-         */
+
 
         final Runnable pingTask = () -> {
+
             try {
                 sendGetRequest(pingUrl);
                 connected = true; // Connection successful
@@ -168,6 +171,7 @@ public class NetworkHandler implements ConnectionStatusInterface {
 
         scheduler.scheduleAtFixedRate(pingTask, 0, 3, TimeUnit.SECONDS);
     }
+    */
 
 
 

@@ -13,6 +13,7 @@
                 <Button text="Easy" fx:id="easyButton" onAction="#easyButtonClicked"/>
                 <Button text="Medium" fx:id="mediumButton" onAction="#mediumButtonClicked"/>
                 <Button text="Hard" fx:id="hardButton" onAction="#hardButtonClicked"/>
+                <Button text="Reset" fx:id="resetButton" onAction="#resetButtonClicked"/>
             </HBox>
 
 </AnchorPane>
