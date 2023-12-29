@@ -15,7 +15,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
-public class Login implements Initializable, ConnectionStatusInterface {
+public class Login implements Initializable, ConnectionStatusListener {
     private final Logger logger = LogManager.getLogger(Login.class);
 
     @FXML
@@ -140,6 +140,7 @@ public class Login implements Initializable, ConnectionStatusInterface {
                         response.getString("token"),
                         LocalDateTime.parse(response.getString("userExpiry"))
                 );
+                enableLogout();
             } else {
                 logger.error("Login failed");
             }
@@ -187,12 +188,49 @@ public class Login implements Initializable, ConnectionStatusInterface {
             if(response.has("userName")) {
                 logger.info("Logout successful");
                 User.getInstance().clearUser();
+                GameController.getInstance().resetBoard();
+                enableLoginRegister();
             } else {
                 logger.error("Logout failed");
             }
         } catch (Exception e) {
             logger.error("Logout error: ", e);
         }
+    }
+
+    private void enableLoginRegister() {
+        Platform.runLater(() -> {
+            loginButton.setDisable(false);
+            registerButton.setDisable(false);
+            logoutButton.setDisable(true);
+            //enable username and password fields
+            usernameField.setDisable(false);
+            passwordField.setDisable(false);
+        });
+    }
+
+    private void enableLogout() {
+        Platform.runLater(() -> {
+            logoutButton.setDisable(false);
+            loginButton.setDisable(true);
+            registerButton.setDisable(true);
+            //disable username and password fields
+            usernameField.setDisable(true);
+            passwordField.setDisable(true);
+        });
+    }
+
+    private void disableAll() {
+        Platform.runLater(() -> {
+            logoutButton.setDisable(true);
+            loginButton.setDisable(true);
+            registerButton.setDisable(true);
+            //disable username and password fields
+            usernameField.setDisable(true);
+            passwordField.setDisable(true);
+            usernameField.clear();
+            passwordField.clear();
+        });
     }
 
     /*
@@ -202,24 +240,18 @@ public class Login implements Initializable, ConnectionStatusInterface {
      */
     @Override
     public void onConnected() {
-        Platform.runLater(() -> {
-            loginButton.setDisable(false);
-            logoutButton.setDisable(false);
-        });
+        Platform.runLater(this::enableLoginRegister);
     }
 
     @Override
     public void onDisconnected() {
-        Platform.runLater(() -> {
-            loginButton.setDisable(true);
-            logoutButton.setDisable(true);
-            registerButton.setDisable(true);
-        });
+        Platform.runLater(this::disableAll);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO: Add listener
+        disableAll();
+        NetworkHandler.getInstance().addConnectionStatusListener(this);
     }
 }
 

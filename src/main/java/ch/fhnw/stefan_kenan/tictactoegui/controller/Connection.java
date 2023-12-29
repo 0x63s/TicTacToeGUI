@@ -13,9 +13,8 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Connection implements Initializable, ConnectionStatusInterface {
+public class Connection implements Initializable, ConnectionStatusListener {
     private final Logger logger = LogManager.getLogger(Connection.class);
-    private ConnectionStatusListener listener;
     @FXML
     private TextField serverIpField;
 
@@ -129,20 +128,19 @@ public class Connection implements Initializable, ConnectionStatusInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        NetworkHandler.getInstance().addConnectionStatusListener(this);
         logger.debug("Initializing Connection view");
         serverIpField.setText(NetworkHandler.getEndpointUrl());
         portField.setText(NetworkHandler.getPort());
 
-        listener = new ConnectionStatusListener();
-        listener.addListener(this);
     }
-
 
     @Override
     public void onConnected() {
-        logger.debug("Connection - onConnected");
         Platform.runLater(() -> {
-            logger.debug("Disabling ping button");
+            logger.debug("Disabling Connection UI elements");
+            serverIpField.setDisable(true);
+            portField.setDisable(true);
             pingButton.setDisable(true);
         });
     }
@@ -150,8 +148,12 @@ public class Connection implements Initializable, ConnectionStatusInterface {
     @Override
     public void onDisconnected() {
         Platform.runLater(() -> {
-            logger.debug("Enabling ping button");
+            logger.debug("Enabling Connection UI elements");
+            serverIpField.setDisable(false);
+            portField.setDisable(false);
             pingButton.setDisable(false);
         });
     }
+
+
 }

@@ -1,6 +1,5 @@
 package ch.fhnw.stefan_kenan.tictactoegui;
 
-import ch.fhnw.stefan_kenan.tictactoegui.controller.NetworkHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,9 +32,4 @@ public class LaunchApp extends Application {
     }
 
 
-    //when exits the game, the user will be logged out
-    @Override
-    public void stop() throws Exception {
-        NetworkHandler.getInstance().stopPingTask();
-    }
 }

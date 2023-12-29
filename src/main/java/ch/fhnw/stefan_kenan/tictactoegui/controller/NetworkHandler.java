@@ -10,20 +10,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 
-import static java.lang.Thread.*;
-
-public class NetworkHandler implements ConnectionStatusInterface {
+public class NetworkHandler {
     private static NetworkHandler instance;
+    private boolean serverReachable = false;
     private final Logger logger = LogManager.getLogger(NetworkHandler.class);
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private boolean connected = false;
-    private boolean keepAlive = true;
     private static String endpointUrl = "http://localhost/";
     private static String port = "50005";
     public static final String pingUrl = "ping";
@@ -33,13 +27,14 @@ public class NetworkHandler implements ConnectionStatusInterface {
     public static final String createGameUrl = "game/new";
     public static final String makeMoveUrl = "game/move";
     public static final String quitGameUrl = "game/quit";
-    private ConnectionStatusListener listener;
+
+    private ConnectionStatusListener statusListener;
+
+    public void setStatusListener(ConnectionStatusListener listener) {
+        this.statusListener = listener;
+    }
 
     NetworkHandler(){
-        listener = new ConnectionStatusListener();
-        listener.addListener(this);
-        keepAlive = false;
-        endpointUrl = "";
     }
 
     public void setEndpointUrl(String url) {
@@ -66,12 +61,113 @@ public class NetworkHandler implements ConnectionStatusInterface {
     }
 
 
-    public void stopListening() {
-        keepAlive = false;
+    public JSONObject sendGetRequest(String urlStr) throws Exception {
+        if(!pingServer()) {
+            logger.error("Server not reachable");
+            return null;
+        } else {
+
+
+
+            String uri = endpointUrl + ":" + port + "/" + urlStr;
+
+            logger.debug("Sending GET request to: " + uri);
+            URL url = URI.create(uri).toURL();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                return new JSONObject(content.toString());
+            } catch(java.net.ConnectException e) {
+                logger.error("[GET] Error: Connection refused!");
+            } catch(Exception e) {
+                logger.error("[GET] Error while processing Get Request!", e);
+            } //Catch connection refuesed exception
+            finally {
+                logger.debug("Closing connection to: " + urlStr);
+                con.disconnect();
+            }
+            return null;
+
+        }
     }
 
-    public JSONObject sendGetRequest(String urlStr) throws Exception {
-        final String uri = endpointUrl + ":" + port + "/" + urlStr;
+    public JSONObject sendPostRequest(String urlStr, String body) throws Exception {
+        if(!pingServer()) {
+            logger.error("Server not reachable");
+            return null;
+        } else {
+
+            final String uri = endpointUrl + ":" + port + "/" + urlStr;
+            logger.debug("Sending POST request to: " + uri);
+            URL url = URI.create(uri).toURL();
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+            con.setDoOutput(true);
+            con.getOutputStream().write(body.getBytes());
+
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                String inputLine;
+                StringBuilder content = new StringBuilder();
+                while ((inputLine = in.readLine()) != null) {
+                    content.append(inputLine);
+                }
+                return new JSONObject(content.toString());
+            } catch (Exception e) {
+                logger.error("Error while processing Post Request!", e);
+            } finally {
+                logger.debug("Closing connection to: " + urlStr);
+                con.disconnect();
+            }
+            return null;
+        }
+    }
+
+
+    /*
+        This method is used to ping the server
+     */
+    private final List<ConnectionStatusListener> listeners = new ArrayList<>();
+
+
+    public void addConnectionStatusListener(ConnectionStatusListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeConnectionStatusListener(ConnectionStatusListener listener) {
+        listeners.remove(listener);
+    }
+
+    private void notifyConnected() {
+        for (ConnectionStatusListener listener : listeners) {
+            listener.onConnected();
+        }
+    }
+
+    private void notifyDisconnected() {
+        for (ConnectionStatusListener listener : listeners) {
+            listener.onDisconnected();
+        }
+    }
+
+    public boolean pingServer() throws Exception {
+        boolean oldServerReachable = serverReachable;
+        logger.debug("Pinging server");
+
+
+
+        String uri = endpointUrl + ":" + port + "/" + pingUrl;
+        JSONObject response = null;
+
         logger.debug("Sending GET request to: " + uri);
         URL url = URI.create(uri).toURL();
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -83,117 +179,41 @@ public class NetworkHandler implements ConnectionStatusInterface {
             while ((inputLine = in.readLine()) != null) {
                 content.append(inputLine);
             }
-            return new JSONObject(content.toString());
-        } catch(java.net.ConnectException e) {
+            response = new JSONObject(content.toString());
+
+            if(response == null){
+                serverReachable = false;
+                return false;
+            }
+
+            //response returns { "ping":"success" } or nothing if ping failed
+        } catch(Exception e) {
+            serverReachable = false;
             logger.error("[GET] Error: Connection refused!");
-        } catch(Exception e) {
-            logger.error("[GET] Error while processing Get Request!", e);
-        } //Catch connection refuesed exception
-        finally {
-            logger.debug("Closing connection to: " + urlStr);
-            con.disconnect();
         }
-        return null;
-    }
 
-    public JSONObject sendPostRequest(String urlStr, String body) throws Exception {
-        final String uri = endpointUrl + ":" + port + "/" + urlStr;
-        logger.debug("Sending POST request to: " + uri);
-        URL url = URI.create(uri).toURL();
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        logger.debug("Closing connection to: " + pingUrl);
+        con.disconnect();
 
 
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 
-        con.setDoOutput(true);
-        con.getOutputStream().write(body.getBytes());
-
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-            String inputLine;
-            StringBuilder content = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                content.append(inputLine);
+        if(response != null && response.getString("ping").equals("success")){
+            serverReachable = true;
+            if(oldServerReachable != serverReachable) {
+                logger.info("Ping successful - Server reachable - Notifying listeners");
+                notifyConnected();
             }
-            return new JSONObject(content.toString());
-        } catch(Exception e) {
-            logger.error("Error while processing Post Request!", e);
-        } finally {
-            logger.debug("Closing connection to: " + urlStr);
-            con.disconnect();
-        }
-        return null;
-    }
-
-
-    /*
-
-        The following methods are used to check if the server is reachable.
-
-     */
-
-    /*
-    public void startPingTask() {
-        /*
-        if (!scheduler.isShutdown()) {
-            logger.debug("Ping task is already running");
-            return;
-        }
-
-
-
-        final Runnable pingTask = () -> {
-
-            try {
-                sendGetRequest(pingUrl);
-                connected = true; // Connection successful
-
-                //TODO: Enable login/logout/register buttons
-                //TODO: Disable ping button
-                logger.debug("Triggering onConnected event");
-                listener.onConnected();
-
-
-
-            } catch (Exception e) {
-                connected = false; // Connection failed
-                stopPingTask();
-                logger.error("Ping failed. Stopping ping task.", e);
+            return true;
+        } else {
+            serverReachable = false;
+            if(oldServerReachable != serverReachable){
+                GameController.getInstance().resetBoard();
                 User.getInstance().clearUser();
-
-                //TODO: Disable login/logout/register buttons
-                //TODO: Enable ping button
-                logger.debug("Triggering onDisconnected event");
-                listener.onDisconnected();
-                stopPingTask();
+                notifyDisconnected();
+                logger.debug("Ping failed - Server not reachable - Notifying listeners");
             }
-        };
-
-        scheduler.scheduleAtFixedRate(pingTask, 0, 3, TimeUnit.SECONDS);
-    }
-    */
-
-
-
-    public void stopPingTask() {
-        scheduler.shutdown();
-        try {
-            if (!scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            scheduler.shutdownNow();
-            Thread.currentThread().interrupt();
+            return false;
         }
     }
 
-    @Override
-    public void onConnected() {
-
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
 }

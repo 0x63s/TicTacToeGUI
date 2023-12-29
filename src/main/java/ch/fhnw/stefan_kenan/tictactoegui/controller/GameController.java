@@ -185,7 +185,17 @@ public class GameController {
         }
     }
 
+    public void resetBoard(){
+        board = new int[3][3];
+        updateAllCells();
+        isGameRunning = false;
+        isGameFinished = false;
+        isPlayerTurn = false;
+        //TODO: Enable Difficulty Buttons when the connection is still active
+    }
+
     public void quitGame() throws Exception {
+
         if (!isGameRunning) {
             logger.debug("No game is currently running.");
             return;
@@ -356,7 +366,7 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addWin();
-        RecordController.getInstance().updateRecord();
+        RecordController.updateRecord();
         logger.debug("Wins: " + User.getInstance().getWins());
         //TODO: Update Stat UI
     }
@@ -367,7 +377,7 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addLoss();
-        RecordController.getInstance().updateRecord();
+        RecordController.updateRecord();
 
         //TODO: Update Stat UI
     }
@@ -378,7 +388,7 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addDraw();
-        RecordController.getInstance().updateRecord();
+        RecordController.updateRecord();
 
         //TODO: Update Stat UI
     }
