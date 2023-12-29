@@ -356,6 +356,8 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addWin();
+        RecordController.getInstance().updateRecord();
+        logger.debug("Wins: " + User.getInstance().getWins());
         //TODO: Update Stat UI
     }
 
@@ -365,6 +367,8 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addLoss();
+        RecordController.getInstance().updateRecord();
+
         //TODO: Update Stat UI
     }
 
@@ -374,6 +378,8 @@ public class GameController {
         isGameRunning = false;
         isPlayerTurn = false;
         User.getInstance().addDraw();
+        RecordController.getInstance().updateRecord();
+
         //TODO: Update Stat UI
     }
 }

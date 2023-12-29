@@ -19,8 +19,9 @@ public class LaunchApp extends Application {
         Parent login = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Login.fxml")));
         Parent difficultySelector = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/DifficultySelector.fxml")));
         Parent gameField = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/GameBoard.fxml")));
+        Parent playerRecord = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/PlayerRecord.fxml")));
 
-        root.getChildren().addAll(connection, login, difficultySelector, gameField);
+        root.getChildren().addAll(connection, login, difficultySelector, playerRecord, gameField);
 
         primaryStage.setTitle("Tic Tac Toe");
         primaryStage.setScene(new Scene(root, 800, 600));

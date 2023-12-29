@@ -121,7 +121,7 @@ public class GameBoard {
 
     }
 
-    public String getButtonText(int row, int col) {
+    public static String getCellValue(int row, int col) {
         return board[row][col].getText();
     }
     public void resetBoard() {
