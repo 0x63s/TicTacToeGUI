@@ -31,6 +31,8 @@ public class NetworkHandler implements ConnectionStatusInterface {
     public static final String loginUrl = "users/login";
     public static final String logoutUrl = "users/logout";
     public static final String createGameUrl = "game/new";
+    public static final String makeMoveUrl = "game/move";
+    public static final String quitGameUrl = "game/quit";
     private ConnectionStatusListener listener;
 
     NetworkHandler(){

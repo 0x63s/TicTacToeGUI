@@ -26,76 +26,25 @@ public class DifficultySelector implements Initializable {
 
     }
 
-    public void createGame(int difficulty) throws Exception {
-
-        /*
-            Post request to /game/new
-            {
-                "token":"64881692cd5fd400",
-                "gameType":"TicTacToe",
-                "difficulty" :"1"
-            }
-
-            token -> from User Object
-            gameType -> TicTacToe
-            difficulty -> from difficulty int
-
-         */
-
-        //get user instance
-        User user = User.getInstance();
-
-        logger.debug("Sending following data to server: " + user.getToken() + " " + "TicTacToe" + " " + difficulty);
-
-        JSONObject requestBody = new JSONObject();
-        requestBody.put("token", user.getToken());
-        requestBody.put("gameType", "TicTacToe");
-        requestBody.put("difficulty", difficulty);
-
-        JSONObject response = NetworkHandler.getInstance().sendPostRequest(NetworkHandler.createGameUrl, requestBody.toString());
-
-                /*
-                Receives a JSON object containing the following fields:
-                {
-                    "board" : [ [0, 0, 0],
-                                [0, 0, 0],
-                                [0, 0, 0]
-                              ],
-                    "difficulty" : 1,
-                    "gameType" : "TicTacToe",
-                    "options" : null,
-                    "result" : false,
-                    "token" : "64881692cd5fd400"
-                }
-
-                 */
-
-        if(response == null){
-            logger.error("Response is null");
-            return;
-        } else{
-            logger.debug("Response: " + response.toString());
-
-            //TODO: Create game object
-        }
-
-
-
-    }
-
 
     public void easyButtonClicked() throws Exception {
-        createGame(1);
+        if(!GameController.getInstance().isGameRunning()){
+            GameController.getInstance().createGame(1);
+        }
     }
 
     @FXML
     public void mediumButtonClicked() throws Exception {
-        createGame(2);
+        if(!GameController.getInstance().isGameRunning()){
+            GameController.getInstance().createGame(2);
+        }
     }
 
     @FXML
     public void hardButtonClicked() throws Exception {
-        createGame(3);
+        if(!GameController.getInstance().isGameRunning()){
+            GameController.getInstance().createGame(3);
+        }
     }
 
 }
