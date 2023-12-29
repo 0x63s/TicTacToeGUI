@@ -35,6 +35,15 @@ public class GameController {
 
     public void createGame(int difficulty) throws Exception {
 
+        if(isGameRunning){
+            logger.debug("Game is already running");
+            return;
+        }
+        if(isGameFinished){
+            logger.debug("Game is already finished");
+            return;
+        }
+
         /*
             Post request to /game/new
             {
@@ -84,6 +93,7 @@ public class GameController {
             logger.debug("Response: " + response.toString());
             isGameRunning = true;
             //TODO: Create game object
+            //TODO: CLear UI
         }
 
 
@@ -93,6 +103,19 @@ public class GameController {
 
     //We need to implemment the move function
     public void makeMove(int x, int y) throws Exception {
+        if(!isGameRunning){
+            logger.debug("No game is currently running");
+            return;
+        }
+        if(isGameFinished){
+            logger.debug("Game is already finished");
+            return;
+        }
+        if(!isPlayerTurn){
+            logger.debug("It is not the players turn");
+            return;
+        }
+
         /*
 
         Post request to /game/move
@@ -143,5 +166,56 @@ public class GameController {
         }
     }
 
+    public void quitGame() throws Exception {
+        if (!isGameRunning) {
+            logger.debug("No game is currently running.");
+            return;
+        }
+
+        logger.debug("Quitting the game.");
+
+        /*
+
+            Post request to /game/quit
+            {
+                "token":"64881692cd5fd400"
+            }
+
+         */
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("token", User.getInstance().getToken());
+
+        // Send the POST request to quit the game
+        JSONObject response = NetworkHandler.getInstance().sendPostRequest(NetworkHandler.quitGameUrl, requestBody.toString());
+
+        /*
+
+        Response:
+            {
+                "board" : [ [0, 0, 0],
+                            [0, 0, 0],
+                            [0, 0, 0] ],
+                "difficulty" : 1,
+                "gameType" : "TicTacToe",
+                "options" : null,
+                "result" : false,
+                "token" : "64881692cd5fd400"
+            }
+
+         */
+        if (response == null) {
+            logger.error("Failed to quit the game: No response from server.");
+        } else {
+            logger.debug("Game quit successfully: " + response);
+
+
+            // Update the game state
+            isGameRunning = false;
+            isGameFinished = true;
+            isPlayerTurn = false;
+
+            //TODO: Update UI
+        }
+    }
 
 }
