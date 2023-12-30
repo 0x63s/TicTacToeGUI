@@ -75,6 +75,7 @@ public class Login implements Initializable, ConnectionStatusListener {
 
             } else {
                 logger.error("Registration failed");
+                InfoController.getInstance().updateInfoLabel(6);
             }
         } catch (Exception e) {
             logger.error("Register error: ", e);
@@ -141,8 +142,10 @@ public class Login implements Initializable, ConnectionStatusListener {
                         LocalDateTime.parse(response.getString("userExpiry"))
                 );
                 enableLogout();
+                InfoController.getInstance().updateInfoLabel(12);
             } else {
                 logger.error("Login failed");
+                InfoController.getInstance().updateInfoLabel(11);
             }
         } catch (Exception e) {
             logger.error("Login error: ", e);
@@ -190,6 +193,7 @@ public class Login implements Initializable, ConnectionStatusListener {
                 User.getInstance().clearUser();
                 GameController.getInstance().resetBoard();
                 enableLoginRegister();
+                InfoController.getInstance().updateInfoLabel(5);
             } else {
                 logger.error("Logout failed");
             }

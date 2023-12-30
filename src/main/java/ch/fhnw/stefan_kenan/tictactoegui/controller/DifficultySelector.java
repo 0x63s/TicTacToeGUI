@@ -33,6 +33,7 @@ public class DifficultySelector implements Initializable, ConnectionStatusListen
         if(!GameController.getInstance().isGameRunning()){
             GameController.getInstance().createGame(1);
             disableDifficultyButtons();
+            InfoController.getInstance().updateInfoLabel(8);
         }
     }
 
@@ -41,6 +42,7 @@ public class DifficultySelector implements Initializable, ConnectionStatusListen
         if(!GameController.getInstance().isGameRunning()){
             GameController.getInstance().createGame(2);
             disableDifficultyButtons();
+            InfoController.getInstance().updateInfoLabel(9);
         }
     }
 
@@ -49,6 +51,7 @@ public class DifficultySelector implements Initializable, ConnectionStatusListen
         if(!GameController.getInstance().isGameRunning()){
             GameController.getInstance().createGame(3);
             disableDifficultyButtons();
+            InfoController.getInstance().updateInfoLabel(10);
         }
     }
 
@@ -56,6 +59,7 @@ public class DifficultySelector implements Initializable, ConnectionStatusListen
     public void resetButtonClicked() throws Exception {
             enableDifficultyButtons();
             GameController.getInstance().resetGame();
+            InfoController.getInstance().updateInfoLabel(7);
     }
 
     private void disableDifficultyButtons(){

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.RecordController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="50.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.RecordController">
 
 
-    <HBox xmlns:fx="http://javafx.com/fxml" spacing="10">
-        <Label text="Wins: "/>
-        <Label fx:id="winsLabel"/>
-        <Label text="Draws: "/>
-        <Label fx:id="drawsLabel"/>
-        <Label text="Losses: "/>
-        <Label fx:id="lossesLabel"/>
+    <HBox spacing="10" xmlns:fx="http://javafx.com/fxml">
+        <Label text="Wins: " />
+        <Label fx:id="winsLabel" />
+        <Label text="Draws: " />
+        <Label fx:id="drawsLabel" />
+        <Label text="Losses: " />
+        <Label fx:id="lossesLabel" />
+      <padding>
+         <Insets left="5.0" top="5.0" />
+      </padding>
     </HBox>
 
 </AnchorPane>

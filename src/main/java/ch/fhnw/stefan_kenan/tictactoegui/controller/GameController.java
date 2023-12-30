@@ -17,6 +17,9 @@ public class GameController {
     private boolean isGameRunning = false;
     private boolean isGameFinished = false;
 
+    private boolean hasWon = false;
+    private boolean hasLost = false;
+
     public static GameController getInstance() {
         if (instance == null) {
             instance = new GameController();
@@ -311,8 +314,10 @@ public class GameController {
             if(board[i][0] == board[i][1] && board[i][1] == board[i][2]){
                 if(board[i][0] == 1){
                     winGame();
+                    this.hasWon = true;
                 } else if(board[i][0] == -1){
                     loseGame();
+                    this.hasLost = true;
                 }
             }
         }
@@ -322,8 +327,10 @@ public class GameController {
             if(board[0][i] == board[1][i] && board[1][i] == board[2][i]){
                 if(board[0][i] == 1){
                     winGame();
+                    this.hasWon = true;
                 } else if(board[0][i] == -1){
                     loseGame();
+                    this.hasLost = true;
                 }
             }
         }
@@ -332,16 +339,20 @@ public class GameController {
         if(board[0][0] == board[1][1] && board[1][1] == board[2][2]){
             if(board[0][0] == 1){
                 winGame();
+                this.hasWon = true;
             } else if(board[0][0] == -1){
                 loseGame();
+                this.hasLost = true;
             }
         }
         //check other diagonal
         if(board[0][2] == board[1][1] && board[1][1] == board[2][0]){
             if(board[0][2] == 1){
                 winGame();
+                this.hasWon = true;
             } else if(board[0][2] == -1){
                 loseGame();
+                this.hasLost = true;
             }
         }
 
@@ -355,7 +366,7 @@ public class GameController {
             }
         }
 
-        if(isBoardFull){
+        if(isBoardFull && !hasWon && !hasLost){
             drawGame();
         }
     }
@@ -367,6 +378,7 @@ public class GameController {
         isPlayerTurn = false;
         User.getInstance().addWin();
         RecordController.updateRecord();
+        InfoController.getInstance().updateInfoLabel(1);
         logger.debug("Wins: " + User.getInstance().getWins());
         //TODO: Update Stat UI
     }
@@ -378,7 +390,7 @@ public class GameController {
         isPlayerTurn = false;
         User.getInstance().addLoss();
         RecordController.updateRecord();
-
+        InfoController.getInstance().updateInfoLabel(3);
         //TODO: Update Stat UI
     }
 
@@ -389,7 +401,7 @@ public class GameController {
         isPlayerTurn = false;
         User.getInstance().addDraw();
         RecordController.updateRecord();
-
+        InfoController.getInstance().updateInfoLabel(2);
         //TODO: Update Stat UI
     }
 }

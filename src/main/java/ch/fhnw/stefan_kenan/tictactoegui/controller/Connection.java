@@ -51,7 +51,7 @@ public class Connection implements Initializable, ConnectionStatusListener {
         //regex that checks if the domain format is correct
         if(!serverIp.matches(urlRegex)){
             logger.error("Invalid domain format");
-            pingButton.setText("Ping");
+            pingButton.setText("Connect");
             pingButton.setDisable(false);
             pingStatusLabel.setText("Invalid domain format");
             return;
@@ -72,20 +72,20 @@ public class Connection implements Initializable, ConnectionStatusListener {
         logger.debug("Sending ping request");
         try {
             if(pingServer()){
-                pingStatusLabel.setText("Ping successful");
+                pingStatusLabel.setText("Connection successful");
                 //NetworkHandler.getInstance().startPingTask();
             } else {
-                pingStatusLabel.setText("Ping failed");
+                pingStatusLabel.setText("Connection failed");
             }
-            pingButton.setText("Ping");
+            pingButton.setText("Connect");
             pingButton.setDisable(false);
 
 
         } catch (Exception e) {
-            logger.error("Ping error: ", e);
-            pingButton.setText("Ping");
+            logger.error("Connection error: ", e);
+            pingButton.setText("Connect");
             pingButton.setDisable(false);
-            pingStatusLabel.setText("Ping failed");
+            pingStatusLabel.setText("Connection failed");
         }
     }
 
@@ -102,7 +102,7 @@ public class Connection implements Initializable, ConnectionStatusListener {
 
         if(response == null){
             logger.debug("Ping failed");
-            pingButton.setText("Ping failed");
+            pingButton.setText("Connection failed");
 
             return false;
         } else{
@@ -112,11 +112,11 @@ public class Connection implements Initializable, ConnectionStatusListener {
         //response returns { "ping":"success" } or nothing if ping failed
         if(response.getString("ping").equals("success")){
             logger.info("Ping successful");
-            pingButton.setText("Ping successful");
+            pingButton.setText("Connection successful");
             return true;
         } else {
             logger.info("Ping failed");
-            pingButton.setText("Ping failed");
+            pingButton.setText("Connection failed");
             return false;
         }
     }
@@ -142,6 +142,7 @@ public class Connection implements Initializable, ConnectionStatusListener {
             serverIpField.setDisable(true);
             portField.setDisable(true);
             pingButton.setDisable(true);
+            InfoController.getInstance().updateInfoLabel(4);
         });
     }
 
