@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="100.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.InfoController">
+
+    <children>
+        <Label fx:id="infoLabel" alignment="CENTER" layoutY="2.0" prefHeight="50.0" prefWidth="800.0" textAlignment="CENTER">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font></Label>
+    </children>
+
+</AnchorPane>
