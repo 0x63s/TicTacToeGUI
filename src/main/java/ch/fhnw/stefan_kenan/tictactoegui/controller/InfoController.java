@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
+
 public class InfoController implements Initializable {
     @FXML
     private Label infoLabel;
