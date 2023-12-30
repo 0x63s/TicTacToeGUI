@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ch.fhnw.stefan_kenan.tictactoegui.controller.GameField"
+            prefHeight="400.0" prefWidth="600.0">
+
+            <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+                <!-- Repeat the ImageView setup for each cell of the 3x3 matrix -->
+                <ImageView fx:id="cell00" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <!-- Add other cells in similar fashion -->
+            </GridPane>
+
+
+</AnchorPane>
